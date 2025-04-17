@@ -20,18 +20,26 @@ const deleteTodo = async (id: string) => {
   return result;
 };
 
+const updateTodo = async (todo: Todo) => {
+  const result = await axios.put(
+    `http://localhost:3001/todos/${todo.id}`,
+    todo
+  );
+  return result;
+};
+
 //SECTION - 리스트페이지
 export default function TodoList() {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
 
-  //useQuery - getTodos
+  // useQuery - getTodos
   const { data, isLoading, isError } = useQuery({
     queryKey: ["todos"],
     queryFn: getTodos,
   });
 
-  //useMutation - addTodo
+  // useMutation - addTodo
   const addMutation = useMutation({
     mutationFn: addTodo,
     onSuccess: () => {
@@ -47,13 +55,23 @@ export default function TodoList() {
     },
   });
 
+  // useMutation - updateTodo
+  const updateMutation = useMutation({
+    mutationFn: updateTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
+
   if (isLoading) return <div>로딩중입니다..</div>;
   if (isError) return <div>에러 발생..</div>;
 
+  //삭제 핸들러
   const handleDeleteTodo = (id: string) => {
     deleteMutation.mutate(id);
   };
 
+  //추가 핸들러
   const handleAddTodo = async () => {
     if (title.trim() !== "") {
       addMutation.mutate({
@@ -68,6 +86,15 @@ export default function TodoList() {
     }
   };
 
+  //완료 핸들러
+  const handleChange = (todo: Todo, e: React.ChangeEvent<HTMLInputElement>) => {
+    updateMutation.mutate({
+      id: todo.id,
+      title: todo.title,
+      completed: e.target.checked,
+    });
+  };
+
   return (
     <>
       <section>
@@ -75,7 +102,11 @@ export default function TodoList() {
           {data &&
             data.map((todo: Todo) => (
               <li key={todo.id}>
-                <input type="checkbox" id="checkbox" name="checkbox" />
+                <input
+                  type="checkbox"
+                  id="checkbox"
+                  onChange={(e) => handleChange(todo, e)}
+                />
                 <label htmlFor="checkbox">{todo.title}</label>
                 <button>수정</button>
                 <button onClick={() => handleDeleteTodo(todo.id)}>삭제</button>
