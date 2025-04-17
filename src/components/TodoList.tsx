@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import TodoItem from "./TodoItem";
 
 const getTodos = async () => {
   const result = await axios.get("http://localhost:3001/todos");
@@ -86,12 +87,21 @@ export default function TodoList() {
     }
   };
 
-  //완료 핸들러
+  //completed 변경 핸들러
   const handleChange = (todo: Todo, e: React.ChangeEvent<HTMLInputElement>) => {
     updateMutation.mutate({
       id: todo.id,
       title: todo.title,
       completed: e.target.checked,
+    });
+  };
+
+  //title 변경 핸들러
+  const handleUpdateTodo = (updatedTodoData: Todo) => {
+    updateMutation.mutate({
+      id: updatedTodoData.id,
+      title: updatedTodoData.title,
+      completed: updatedTodoData.completed,
     });
   };
 
@@ -101,16 +111,13 @@ export default function TodoList() {
         <ul>
           {data &&
             data.map((todo: Todo) => (
-              <li key={todo.id}>
-                <input
-                  type="checkbox"
-                  id="checkbox"
-                  onChange={(e) => handleChange(todo, e)}
-                />
-                <label htmlFor="checkbox">{todo.title}</label>
-                <button>수정</button>
-                <button onClick={() => handleDeleteTodo(todo.id)}>삭제</button>
-              </li>
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onChange={handleChange}
+                onDelete={handleDeleteTodo}
+                onUpdate={handleUpdateTodo}
+              />
             ))}
         </ul>
       </section>
