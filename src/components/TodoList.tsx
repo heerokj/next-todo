@@ -29,8 +29,15 @@ const updateTodo = async (todo: Todo) => {
   return result;
 };
 
+const getFilteredItems = (data: Todo[], filter: string) => {
+  if (filter === "전체") {
+    return data;
+  }
+  return data.filter((todo) => todo.completed === true);
+};
+
 //SECTION - 리스트페이지
-export default function TodoList() {
+export default function TodoList({ filter }: { filter: string }) {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
 
@@ -105,12 +112,14 @@ export default function TodoList() {
     });
   };
 
+  const filteredData = getFilteredItems(data, filter);
+
   return (
     <>
       <section>
         <ul>
-          {data &&
-            data.map((todo: Todo) => (
+          {filteredData &&
+            filteredData.map((todo: Todo) => (
               <TodoItem
                 key={todo.id}
                 todo={todo}
