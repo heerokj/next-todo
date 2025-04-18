@@ -1,5 +1,4 @@
-"use client";
-import { Todo } from "@/services/todo";
+import { Todo } from "@/types/todo";
 import React, { useState } from "react";
 
 type Props = {
@@ -33,30 +32,52 @@ export default function TodoItem({
 
   if (edited) {
     return (
-      <li>
+      <li className="flex justify-between border-b-1 py-1">
         <input
           type="text"
           value={updatedTitle}
           onChange={(e) => setUpdatedTitle(e.target.value)}
+          className="p-2"
         />
-        <button onClick={() => handleEditTodo(todo)}>완료</button>
+        <button
+          onClick={() => handleEditTodo(todo)}
+          className="border-1 p-1 px-2  bg-blue-800 hover:bg-blue-700 text-white"
+        >
+          완료
+        </button>
       </li>
     );
   }
 
   return (
-    <li>
-      <input
-        type="checkbox"
-        id="checkbox"
-        onChange={(e) => onChange(todo, e)}
-        checked={todo.completed}
-      />
-      <label htmlFor="checkbox">{todo.title}</label>
-      <button onClick={handleUpdateTitle}>
-        {todo.completed === true ? "" : "수정"}
-      </button>
-      <button onClick={() => onDelete(todo.id)}>삭제</button>
+    <li className="flex justify-between border-b-1 py-1">
+      <div className="flex gap-2 items-center">
+        <input
+          type="checkbox"
+          id="checkbox"
+          onChange={(e) => onChange(todo, e)}
+          checked={todo.completed}
+        />
+        <label htmlFor="checkbox">{todo.title}</label>
+      </div>
+      <div className="flex gap-2">
+        <button
+          onClick={handleUpdateTitle}
+          className={`${
+            todo.completed === true
+              ? ``
+              : `border-1 p-1 px-2  bg-blue-800 hover:bg-blue-700 text-white`
+          } `}
+        >
+          {todo.completed === true ? "" : "수정"}
+        </button>
+        <button
+          onClick={() => onDelete(todo.id)}
+          className="border-1 p-1 px-2 bg-red-800 hover:bg-red-700 text-white"
+        >
+          삭제
+        </button>
+      </div>
     </li>
   );
 }
