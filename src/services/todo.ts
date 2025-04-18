@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getTodos = async () => {
   try {
-    const result = await axios.get("http://localhost:3001/todos");
+    const result = await axios.get(`${process.env.NEXT_PUBLIC_PORT}/todos`);
     return result.data;
   } catch (error) {
     console.error("투두리스트 불러오기 실패:", error);
@@ -13,7 +13,10 @@ export const getTodos = async () => {
 
 export const addTodo = async (todo: Todo) => {
   try {
-    const result = await axios.post("http://localhost:3001/todos", todo);
+    const result = await axios.post(
+      `${process.env.NEXT_PUBLIC_PORT}/todos`,
+      todo
+    );
     return result;
   } catch (error) {
     console.error("투두리스트 추가 실패:", error);
@@ -23,7 +26,9 @@ export const addTodo = async (todo: Todo) => {
 
 export const deleteTodo = async (id: string) => {
   try {
-    const result = await axios.delete(`http://localhost:3001/todos/${id}`);
+    const result = await axios.delete(
+      `${process.env.NEXT_PUBLIC_PORT}/todos/${id}`
+    );
     return result;
   } catch (error) {
     console.error("투두리스트 삭제 실패:", error);
@@ -34,7 +39,7 @@ export const deleteTodo = async (id: string) => {
 export const updateTodo = async (todo: Todo) => {
   try {
     const result = await axios.put(
-      `http://localhost:3001/todos/${todo.id}`,
+      `${process.env.NEXT_PUBLIC_PORT}/todos/${todo.id}`,
       todo
     );
     return result;
