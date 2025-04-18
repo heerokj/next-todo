@@ -1,13 +1,33 @@
 {
   "todos": [
     {
-      "id": "1",
-      "title": "리액트 공부하기",
+      "id": "09de3fc4-1143-4efb-8672-c5d9ca55802b",
+      "title": "넥스트",
+      "completed": true
+    },
+    {
+      "id": "438e92b5-83fe-4304-a7e1-3739d3a8e9d6",
+      "title": "파이썬",
       "completed": false
     },
     {
-      "id": "2",
-      "title": "자바스크립트 공부하기",
+      "id": "73d08ade-db5e-4552-89c2-0cd3ffb0643a",
+      "title": "자바스크립트",
+      "completed": true
+    },
+    {
+      "id": "4f86a81e-d8c4-41f0-9e6c-fba31c0122d3",
+      "title": "리액트",
+      "completed": true
+    },
+    {
+      "id": "a673c05c-97e7-430b-8076-2b718fd43dc6",
+      "title": "자바",
+      "completed": false
+    },
+    {
+      "id": "a6e4555b-e3d5-4783-95d6-25bb33560a12",
+      "title": "파이션",
       "completed": false
     }
   ]

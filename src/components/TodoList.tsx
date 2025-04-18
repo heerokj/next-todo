@@ -1,10 +1,8 @@
 "use client";
-
-import React, { useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import TodoItem from "./TodoItem";
 import { Todo } from "@/types/todo";
 import useTodo from "@/hooks/useTodo";
+import EditTodo from "./EditTodo";
 
 const getFilteredItems = (data: Todo[], filter: string) => {
   if (filter === "전체") {
@@ -15,9 +13,6 @@ const getFilteredItems = (data: Todo[], filter: string) => {
 
 //SECTION - 리스트페이지
 export default function TodoList({ filter }: { filter: string }) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState("");
-
   const {
     data,
     isLoading,
@@ -36,25 +31,8 @@ export default function TodoList({ filter }: { filter: string }) {
   };
 
   //추가 핸들러
-  const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (title.trim() !== "") {
-      addMutation.mutate({
-        id: uuidv4(),
-        title: title,
-        completed: false,
-      });
-      setTitle("");
-
-      //input 창 포커스
-      if (inputRef.current !== null) {
-        inputRef.current.disabled = false;
-        inputRef.current.focus();
-      }
-    } else {
-      alert("타이틀을 입력해주세요.");
-      return;
-    }
+  const handleAddTodo = (addTodoData: Todo) => {
+    addMutation.mutate(addTodoData);
   };
 
   //completed 변경 핸들러
@@ -93,21 +71,7 @@ export default function TodoList({ filter }: { filter: string }) {
             ))}
         </ul>
       </section>
-      <form onSubmit={handleAddTodo}>
-        <input
-          type="text"
-          placeholder="할 일을 입력하세요"
-          ref={inputRef}
-          onChange={(e) => {
-            setTitle(e.target.value);
-          }}
-          value={title}
-          className="border-1 mr-2 px-2 p-1"
-        />
-        <button className="border-1 p-1 px-2  bg-gray-500 hover:bg-gray-400 text-white">
-          추가하기
-        </button>
-      </form>
+      <EditTodo onAddTodo={handleAddTodo} />
     </>
   );
 }
