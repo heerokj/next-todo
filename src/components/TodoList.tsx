@@ -1,33 +1,10 @@
 "use client";
-import { Todo } from "@/services/todo";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+
+import React, { useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import axios from "axios";
 import TodoItem from "./TodoItem";
-
-const getTodos = async () => {
-  const result = await axios.get("http://localhost:3001/todos");
-  return result.data;
-};
-
-const addTodo = async (todo: Todo) => {
-  const result = await axios.post("http://localhost:3001/todos", todo);
-  return result;
-};
-
-const deleteTodo = async (id: string) => {
-  const result = await axios.delete(`http://localhost:3001/todos/${id}`);
-  return result;
-};
-
-const updateTodo = async (todo: Todo) => {
-  const result = await axios.put(
-    `http://localhost:3001/todos/${todo.id}`,
-    todo
-  );
-  return result;
-};
+import { Todo } from "@/types/todo";
+import useTodo from "@/hooks/useTodo";
 
 const getFilteredItems = (data: Todo[], filter: string) => {
   if (filter === "전체") {
@@ -38,38 +15,17 @@ const getFilteredItems = (data: Todo[], filter: string) => {
 
 //SECTION - 리스트페이지
 export default function TodoList({ filter }: { filter: string }) {
-  const queryClient = useQueryClient();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
 
-  // useQuery - getTodos
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["todos"],
-    queryFn: getTodos,
-  });
-
-  // useMutation - addTodo
-  const addMutation = useMutation({
-    mutationFn: addTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
-
-  // useMutation - deleteTodo
-  const deleteMutation = useMutation({
-    mutationFn: deleteTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
-
-  // useMutation - updateTodo
-  const updateMutation = useMutation({
-    mutationFn: updateTodo,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todos"] });
-    },
-  });
+  const {
+    data,
+    isLoading,
+    isError,
+    addMutation,
+    deleteMutation,
+    updateMutation,
+  } = useTodo();
 
   if (isLoading) return <div>로딩중입니다..</div>;
   if (isError) return <div>에러 발생..</div>;
@@ -80,7 +36,8 @@ export default function TodoList({ filter }: { filter: string }) {
   };
 
   //추가 핸들러
-  const handleAddTodo = async () => {
+  const handleAddTodo = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (title.trim() !== "") {
       addMutation.mutate({
         id: uuidv4(),
@@ -88,6 +45,12 @@ export default function TodoList({ filter }: { filter: string }) {
         completed: false,
       });
       setTitle("");
+
+      //input 창 포커스
+      if (inputRef.current !== null) {
+        inputRef.current.disabled = false;
+        inputRef.current.focus();
+      }
     } else {
       alert("타이틀을 입력해주세요.");
       return;
@@ -134,12 +97,16 @@ export default function TodoList({ filter }: { filter: string }) {
         <input
           type="text"
           placeholder="할 일을 입력하세요"
+          ref={inputRef}
           onChange={(e) => {
             setTitle(e.target.value);
           }}
           value={title}
+          className="border-1 mr-2 px-2 p-1"
         />
-        <button>추가하기</button>
+        <button className="border-1 p-1 px-2  bg-gray-500 hover:bg-gray-400 text-white">
+          추가하기
+        </button>
       </form>
     </>
   );
