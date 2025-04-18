@@ -58,7 +58,12 @@ export default function TodoItem({
           onChange={(e) => onChange(todo, e)}
           checked={todo.completed}
         />
-        <label htmlFor="checkbox">{todo.title}</label>
+        <label
+          htmlFor="checkbox"
+          className={`${todo.completed ? `line-through` : ``}`}
+        >
+          {todo.title}
+        </label>
       </div>
       <div className="flex gap-2">
         <button
