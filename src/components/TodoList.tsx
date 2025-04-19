@@ -22,7 +22,7 @@ export default function TodoList({ filter }: { filter: string }) {
     updateMutation,
   } = useTodo();
 
-  if (isLoading) return <div>로딩중입니다..</div>;
+  if (isLoading) return <div>로딩중입니다.. 잠시만 기다려주세요😊</div>;
   if (isError) return <div>에러 발생..</div>;
 
   //삭제 핸들러
@@ -71,7 +71,7 @@ export default function TodoList({ filter }: { filter: string }) {
             ))}
         </ul>
       </section>
-      <EditTodo onAddTodo={handleAddTodo} />
+      <EditTodo onAddTodo={handleAddTodo} isPending={addMutation.isPending} />
     </>
   );
 }

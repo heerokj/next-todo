@@ -5,9 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 
 type Prop = {
   onAddTodo: (todo: Todo) => void;
+  isPending: boolean;
 };
 
-export default function EditTodo({ onAddTodo }: Prop) {
+export default function EditTodo({ onAddTodo, isPending }: Prop) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState("");
 
@@ -38,7 +39,7 @@ export default function EditTodo({ onAddTodo }: Prop) {
   };
 
   return (
-    <form onSubmit={handleAddTitle}>
+    <form onSubmit={handleAddTitle} className="flex justify-between">
       <input
         type="text"
         placeholder="할 일을 입력하세요"
@@ -50,7 +51,7 @@ export default function EditTodo({ onAddTodo }: Prop) {
         className="border-1 mr-2 px-2 p-1"
       />
       <button className="border-1 p-1 px-2  bg-gray-500 hover:bg-gray-400 text-white">
-        추가하기
+        {isPending ? "추가중... " : "추가하기"}
       </button>
     </form>
   );
