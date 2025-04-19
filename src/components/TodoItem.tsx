@@ -60,12 +60,12 @@ export default function TodoItem({
         />
         <label
           htmlFor="checkbox"
-          className={`${todo.completed ? `line-through` : ``}`}
+          className={`${todo.completed ? `line-through text-gray-600` : ``}`}
         >
           {todo.title}
         </label>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 ml-2">
         <button
           onClick={handleUpdateTitle}
           className={`${
